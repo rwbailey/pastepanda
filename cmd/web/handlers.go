@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 )
@@ -29,19 +28,5 @@ func pasteCreate(w http.ResponseWriter, r *http.Request) {
 
 func pasteCreatePost(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
-
 	w.Write([]byte("Save a new paste"))
-}
-
-func main() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /{$}", home)
-	mux.HandleFunc("GET /paste/view/{id}", pasteView)
-	mux.HandleFunc("GET /paste/create", pasteCreate)
-	mux.HandleFunc("POST /paste/create", pasteCreatePost)
-
-	log.Print("starting server on :4000")
-
-	err := http.ListenAndServe(":4000", mux)
-	log.Fatal(err)
 }
