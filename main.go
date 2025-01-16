@@ -8,6 +8,8 @@ import (
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Server", "Go")
+
 	w.Write([]byte("hello"))
 }
 
@@ -18,8 +20,7 @@ func pasteView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	msg := fmt.Sprintf("Display a specific paste with ID %d...", id)
-	w.Write([]byte(msg))
+	fmt.Fprintf(w, "Display a specific paste with ID %d...", id)
 }
 
 func pasteCreate(w http.ResponseWriter, r *http.Request) {
@@ -27,13 +28,15 @@ func pasteCreate(w http.ResponseWriter, r *http.Request) {
 }
 
 func pasteCreatePost(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusCreated)
+
 	w.Write([]byte("Save a new paste"))
 }
 
 func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /{$}", home)
-	mux.HandleFunc("GET /paste/view/{id...}", pasteView)
+	mux.HandleFunc("GET /paste/view/{id}", pasteView)
 	mux.HandleFunc("GET /paste/create", pasteCreate)
 	mux.HandleFunc("POST /paste/create", pasteCreatePost)
 
