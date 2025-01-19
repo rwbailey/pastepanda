@@ -1,9 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"net/http"
+	"pastepanda/internal/models"
 	"strconv"
 )
 
@@ -35,7 +37,16 @@ func (app *application) pasteView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "Display a specific paste with ID %d...", id)
+	paste, err := app.pastes.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			http.NotFound(w, r)
+			return
+		}
+		app.serverError(w, r, err)
+		return
+	}
+	fmt.Fprintf(w, "%+v", paste)
 }
 
 func (app *application) pasteCreate(w http.ResponseWriter, r *http.Request) {

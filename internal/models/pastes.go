@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 )
 
@@ -35,7 +36,28 @@ func (m *PasteModel) Insert(title string, content string, expires int) (int, err
 }
 
 func (m *PasteModel) Get(id int) (Paste, error) {
-	return Paste{}, nil
+	stmt := `SELECT id, title, content, created, expires FROM pastes
+	WHERE expires > UTC_TIMESTAMP() AND id = ?`
+
+	row := m.DB.QueryRow(stmt, id)
+
+	var p Paste
+
+	err := row.Scan(
+		&p.ID,
+		&p.Title,
+		&p.Content,
+		&p.Created,
+		&p.Expires,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return Paste{}, ErrNoRecord
+		}
+		return Paste{}, err
+	}
+
+	return p, nil
 }
 
 func (m *PasteModel) Latest() ([]Paste, error) {
