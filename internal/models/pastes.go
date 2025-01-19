@@ -61,5 +61,35 @@ func (m *PasteModel) Get(id int) (Paste, error) {
 }
 
 func (m *PasteModel) Latest() ([]Paste, error) {
-	return nil, nil
+	stmt := `SELECT id, title, content, created, expires FROM pastes
+	WHERE expires > UTC_TIMESTAMP() ORDER BY id DESC LIMIT 10`
+
+	rows, err := m.DB.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var pastes []Paste
+
+	for rows.Next() {
+		var p Paste
+		err = rows.Scan(
+			&p.ID,
+			&p.Title,
+			&p.Content,
+			&p.Created,
+			&p.Expires,
+		)
+		if err != nil {
+			return nil, err
+		}
+		pastes = append(pastes, p)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return pastes, nil
 }
