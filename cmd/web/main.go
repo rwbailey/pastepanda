@@ -8,10 +8,13 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+
+	"pastepanda/internal/models"
 )
 
 type application struct {
 	logger *slog.Logger
+	pastes *models.PasteModel
 }
 
 func main() {
@@ -30,6 +33,7 @@ func main() {
 
 	app := &application{
 		logger: logger,
+		pastes: &models.PasteModel{DB: db},
 	}
 
 	logger.Info("starting server", slog.String("addr", *addr))
