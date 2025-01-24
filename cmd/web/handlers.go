@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
 
@@ -51,12 +52,33 @@ func (app *application) pasteView(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			http.NotFound(w, r)
-			return
+
+		} else {
+			app.serverError(w, r, err)
 		}
+		return
+	}
+
+	files := []string{
+		"./ui/html/base.tmpl.html",
+		"./ui/html/partials/nav.tmpl.html",
+		"./ui/html/pages/view.tmpl.html",
+	}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
 		app.serverError(w, r, err)
 		return
 	}
-	fmt.Fprintf(w, "%+v", paste)
+
+	data := templateData{
+		Paste: paste,
+	}
+
+	err = ts.ExecuteTemplate(w, "base", data)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
 }
 
 func (app *application) pasteCreate(w http.ResponseWriter, r *http.Request) {
