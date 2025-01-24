@@ -18,9 +18,10 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.render(w, r, http.StatusOK, "home.tmpl.html", templateData{
-		Pastes: pastes,
-	})
+	data := app.newTemplateData(r)
+	data.Pastes = pastes
+
+	app.render(w, r, http.StatusOK, "home.tmpl.html", data)
 }
 
 func (app *application) pasteView(w http.ResponseWriter, r *http.Request) {
@@ -41,9 +42,10 @@ func (app *application) pasteView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.render(w, r, http.StatusOK, "view.tmpl.html", templateData{
-		Paste: paste,
-	})
+	data := app.newTemplateData(r)
+	data.Paste = paste
+
+	app.render(w, r, http.StatusOK, "view.tmpl.html", data)
 }
 
 func (app *application) pasteCreate(w http.ResponseWriter, r *http.Request) {
