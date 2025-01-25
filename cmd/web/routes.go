@@ -13,5 +13,5 @@ func (app *application) routes() http.Handler {
 	mux.HandleFunc("GET /paste/create", app.pasteCreate)
 	mux.HandleFunc("POST /paste/create", app.pasteCreatePost)
 
-	return commonHeaders(mux)
+	return app.logRequest(commonHeaders(mux))
 }
