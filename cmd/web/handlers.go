@@ -91,5 +91,7 @@ func (app *application) pasteCreatePost(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	app.sessionManager.Put(r.Context(), "flash", "Paste successfully created!")
+
 	http.Redirect(w, r, fmt.Sprintf("/paste/view/%d", id), http.StatusSeeOther)
 }

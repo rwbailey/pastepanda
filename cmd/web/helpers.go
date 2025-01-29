@@ -50,6 +50,7 @@ func (app *application) newTemplateData(r *http.Request) templateData {
 	_ = r
 	return templateData{
 		CurrentYear: time.Now().Year(),
+		Flash:       app.sessionManager.PopString(r.Context(), "flash"),
 	}
 }
 
