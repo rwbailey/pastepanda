@@ -29,7 +29,7 @@ type application struct {
 
 func main() {
 	addr := flag.String("addr", ":4000", "The HTTP network address")
-	dsn := flag.String("dsn", "web:password@/pastepanda?parseTime=true", "MySQL Data Sourse Name")
+	dsn := flag.String("dsn", "web:password@/pastepanda?parseTime=true", "MySQL Data Source Name")
 	flag.Parse()
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
