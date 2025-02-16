@@ -1,5 +1,7 @@
 CREATE DATABASE pastepanda CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+CREATE DATABASE test_pastepanda CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 USE pastepanda;
 
 CREATE TABLE pastes (
@@ -56,3 +58,11 @@ CREATE TABLE users (
 );
 
 ALTER TABLE users ADD CONSTRAINT users_uc_email UNIQUE (email);
+
+CREATE USER 'web'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON pastepanda.* TO 'web'@'localhost';
+ALTER USER 'web'@'localhost' IDENTIFIED BY 'password';
+
+CREATE USER 'test_web'@'localhost';
+GRANT CREATE, DROP, ALTER, INDEX, SELECT, INSERT, UPDATE, DELETE ON test_pastepanda.* TO 'test_web'@'localhost';
+ALTER USER 'test_web'@'localhost' IDENTIFIED BY 'pass';
