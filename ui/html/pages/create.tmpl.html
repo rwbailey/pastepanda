@@ -1,4 +1,4 @@
-{{define "title"}}Create a New Snippet{{end}}
+{{define "title"}}Create a New Paste{{end}}
 
 {{define "main"}}
 <form action='/paste/create' method='POST'>
@@ -27,7 +27,7 @@
         <input type='radio' name='expires' value='1' {{if (eq .Form.Expires 1)}}checked{{end}}> One Day
     </div>
     <div>
-        <input type='submit' value='Publish snippet'>
+        <input type='submit' value='Publish paste'>
     </div>
 </form>
 {{end}}

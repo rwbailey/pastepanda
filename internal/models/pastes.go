@@ -6,6 +6,12 @@ import (
 	"time"
 )
 
+type PasteModelInterface interface {
+	Insert(title string, content string, expires int) (int, error)
+	Get(id int) (Paste, error)
+	Latest() ([]Paste, error)
+}
+
 type Paste struct {
 	ID      int
 	Title   string

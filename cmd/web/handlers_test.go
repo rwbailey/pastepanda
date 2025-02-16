@@ -43,3 +43,54 @@ func TestPingEndToEnd(t *testing.T) {
 	assert.Equal(t, http.StatusOK, code)
 	assert.Equal(t, "OK", body)
 }
+
+func TestPasteView(t *testing.T) {
+	app := newTestApplication(t)
+
+	ts := newTestServer(t, app.routes())
+	defer ts.Close()
+
+	tests := map[string]struct {
+		urlPath  string
+		wantCode int
+		wantBody string
+	}{
+		"Valid ID": {
+			urlPath:  "/paste/view/1",
+			wantCode: http.StatusOK,
+			wantBody: "An old silent pond...",
+		},
+		"Non-existent ID": {
+			urlPath:  "/paste/view/2",
+			wantCode: http.StatusNotFound,
+		},
+		"Negative ID": {
+			urlPath:  "/paste/view/-1",
+			wantCode: http.StatusNotFound,
+		},
+		"Decimal ID": {
+			urlPath:  "/paste/view/1.23",
+			wantCode: http.StatusNotFound,
+		},
+		"String ID": {
+			urlPath:  "/paste/view/foo",
+			wantCode: http.StatusNotFound,
+		},
+		"Empty ID": {
+			urlPath:  "/paste/view/",
+			wantCode: http.StatusNotFound,
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			code, _, body := ts.get(t, test.urlPath)
+
+			assert.Equal(t, test.wantCode, code)
+
+			if test.wantBody != "" {
+				assert.Contains(t, body, test.wantBody)
+			}
+		})
+	}
+}
